@@ -18,7 +18,10 @@
     "forceConsistentCasingInFileNames": false,
     "noFallthroughCasesInSwitch": false,
     "paths": {
-			"@modules/*": ["src/modules/*"]
+			"@modules/*": ["src/modules/*"],
+      "@enums/*": ["src/core/enums/*"],
+      "@guards/*": ["src/core/guards/*"],
+      "@decorators/*": ["src/core/decorators/*"]
 		},
   }
 }

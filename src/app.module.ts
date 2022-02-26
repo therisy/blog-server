@@ -1,6 +1,7 @@
 import { Module } from "@nestjs/common";
 import { TypeOrmModule } from "@nestjs/typeorm";
 import { ConfigModule, ConfigService } from "@nestjs/config";
+import { RateLimiterModule, RateLimiterGuard } from "nestjs-rate-limiter";
 import { AppController } from "./app.controller";
 import { AppService } from "./app.service";
 import { UserModule } from "@modules/user/user.module";
@@ -9,6 +10,11 @@ import { factory } from "./config";
 
 @Module({
 	imports: [
+		RateLimiterModule.register({
+			points: 15,
+			duration: 30,
+			keyPrefix: "global",
+		}),
 		TypeOrmModule.forRootAsync({
 			imports: [ConfigModule],
 			useFactory: (configService: ConfigService) => ({

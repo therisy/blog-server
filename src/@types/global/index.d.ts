@@ -11,10 +11,6 @@ declare global {
 			role: number;
 		}
 
-		interface Jwt {
-			access_token: string;
-		}
-
 		interface JwtUser extends User {
 			access_token: string;
 		}

@@ -1,8 +1,16 @@
-import { Body, Controller, Get, Patch, Post, UseGuards, Delete } from "@nestjs/common";
+import {
+	Body,
+	Controller,
+	Get,
+	Patch,
+	Post,
+	UseGuards,
+	Delete,
+} from "@nestjs/common";
 import { JwtGuard } from "@guards/jwt.guard";
 import { UserService } from "./user.service";
 import { CreateUserDTO } from "./dto/create-user.dto";
-import { User } from "@decorators/user.decorator"
+import { User } from "@decorators/user.decorator";
 import { PatchPasswordDTO } from "./dto/update-password.dto";
 import { PatchUserDTO } from "./dto/patch-user.dto";
 
@@ -10,35 +18,41 @@ import { PatchUserDTO } from "./dto/patch-user.dto";
 export class UserController {
 	constructor(private readonly userService: UserService) {}
 
-	@Post('/create')
+	@Post("/create")
 	create(@Body() field: CreateUserDTO): Promise<Blog.ReturnType<string>> {
 		return this.userService.createNewUser(field);
 	}
 
-	@Post('/login')
+	@Post("/login")
 	login(@Body() field: CreateUserDTO): Promise<Blog.ReturnType<string>> {
 		return this.userService.login(field);
 	}
 
-	@Get('/@me')
+	@Get("/@me")
 	@UseGuards(JwtGuard)
 	getUser(@User() user: Auth.User): Promise<Blog.ReturnType<Auth.JwtUser>> {
 		return this.userService.getUserInfo(user);
 	}
 
-	@Patch('/@me')
+	@Patch("/@me")
 	@UseGuards(JwtGuard)
-	updateMy(@User() user: Auth.User, @Body() field: PatchUserDTO): Promise<Blog.ReturnType<string>> {
+	updateMy(
+		@User() user: Auth.User,
+		@Body() field: PatchUserDTO,
+	): Promise<Blog.ReturnType<string>> {
 		return this.userService.updateMy(user, field);
 	}
 
-	@Patch('/password')
+	@Patch("/password")
 	@UseGuards(JwtGuard)
-	updatePassword(@User() user: Auth.User, @Body() password: PatchPasswordDTO): Promise<Blog.ReturnType<string>> {
+	updatePassword(
+		@User() user: Auth.User,
+		@Body() password: PatchPasswordDTO,
+	): Promise<Blog.ReturnType<string>> {
 		return this.userService.updatePassword(user, password);
 	}
 
-	@Delete('/@me')
+	@Delete("/@me")
 	@UseGuards(JwtGuard)
 	deleteAccount(@User() user: Auth.User): Promise<Blog.ReturnType<boolean>> {
 		return this.userService.deleteAccount(user);

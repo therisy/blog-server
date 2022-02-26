@@ -6,7 +6,7 @@ export const factory = () => ({
 	API_VERSION: (process.env.API_VERSION as string) || "v1",
 	JWT_SECRET: process.env.JWT_SECRET as string,
 	SUPABASE: {
-		KEY: process.env.SUPABASE_KEY as string
+		KEY: process.env.SUPABASE_KEY as string,
 	},
 	POSTGRES: {
 		USERNAME: process.env.POSTGRES_USERNAME as string,

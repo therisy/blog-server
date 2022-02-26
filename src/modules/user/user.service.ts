@@ -1,4 +1,11 @@
-import { ConflictException, HttpStatus, Injectable, NotAcceptableException, NotFoundException, UnauthorizedException } from "@nestjs/common";
+import {
+	ConflictException,
+	HttpStatus,
+	Injectable,
+	NotAcceptableException,
+	NotFoundException,
+	UnauthorizedException,
+} from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
 import * as bcrypt from "bcrypt";
@@ -18,7 +25,6 @@ export class UserService {
 		private readonly jwtService: JwtService,
 		private readonly supabase: SupaBaseService,
 		private readonly snowflake: Snowflake,
-
 	) {}
 
 	async createNewUser(
@@ -36,7 +42,7 @@ export class UserService {
 			username: field.username,
 			password: await bcrypt.hash(field.password, 10),
 			email: field.email,
-			role: RoleTypes.USER
+			role: RoleTypes.USER,
 		};
 
 		const user = await this.userRepository.save(body);
@@ -46,16 +52,19 @@ export class UserService {
 		return {
 			statusCode: HttpStatus.CREATED,
 			message: "Account created",
-			data: token
+			data: token,
 		};
 	}
 
-	async login(field: CreateUserDTO): Promise<Blog.ReturnType<string>>  {
-		const user = await this.userRepository.findOne({ username: field.username, email: field.email });
-		if(!user) throw new NotFoundException('User not found');
+	async login(field: CreateUserDTO): Promise<Blog.ReturnType<string>> {
+		const user = await this.userRepository.findOne({
+			username: field.username,
+			email: field.email,
+		});
+		if (!user) throw new NotFoundException("User not found");
 
 		const match = await bcrypt.compare(field.password, user.password);
-		if(!match) throw new UnauthorizedException();
+		if (!match) throw new UnauthorizedException();
 
 		const token = await this.createUserToken(user.uid);
 
@@ -68,7 +77,7 @@ export class UserService {
 
 	async getUserInfo(user: Auth.User): Promise<Blog.ReturnType<Auth.JwtUser>> {
 		const getUser = await this.userRepository.findOne({ uid: user.uid });
-		if(!getUser) throw new NotFoundException('User not found');
+		if (!getUser) throw new NotFoundException("User not found");
 
 		const token = await this.createUserToken(getUser.uid);
 
@@ -79,7 +88,7 @@ export class UserService {
 				username: getUser.username,
 				email: getUser.email,
 				role: getUser.role,
-				access_token: token
+				access_token: token,
 			},
 		};
 	}
@@ -106,17 +115,20 @@ export class UserService {
 		const newPassword = await bcrypt.hash(password.newPassword, 10);
 
 		const body = {
-			password: newPassword
+			password: newPassword,
 		};
 
-		await this.userRepository.update({ uid: user.uid, email: user.email}, body);
+		await this.userRepository.update(
+			{ uid: user.uid, email: user.email },
+			body,
+		);
 
 		const token = this.createUserToken(user.uid);
 
 		return {
 			statusCode: HttpStatus.OK,
 			message: "successful",
-			data: token
+			data: token,
 		};
 	}
 
@@ -135,9 +147,12 @@ export class UserService {
 			!!newUser.email && newUser.email != getUser.email
 				? newUser.email
 				: getUser.email;
-	
-		await this.userRepository.update({uid: getUser.uid, email: getUser.email},{username,email});
-		
+
+		await this.userRepository.update(
+			{ uid: getUser.uid, email: getUser.email },
+			{ username, email },
+		);
+
 		const token = this.createUserToken(user.uid);
 
 		return {
@@ -150,16 +165,16 @@ export class UserService {
 	async deleteAccount(user: Auth.User): Promise<Blog.ReturnType<boolean>> {
 		const getUser = await this.userRepository.findOne({ uid: user.uid });
 		if (!getUser) throw new NotFoundException("User not found");
-	
+
 		await this.userRepository.delete({ uid: user.uid, email: user.email });
 
 		return {
 			statusCode: HttpStatus.OK,
-			message: 'successful',
-			data: true
+			message: "successful",
+			data: true,
 		};
 	}
- 
+
 	createUserToken(id: string): string {
 		const token = this.jwtService.sign(
 			{ uid: id },

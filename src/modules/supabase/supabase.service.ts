@@ -4,13 +4,16 @@ import { CONFIG } from "src/config";
 
 @Injectable()
 export class SupaBaseService {
-    private supabase: SupabaseClient;
+	private supabase: SupabaseClient;
 
-    constructor() {
-        this.supabase = createClient("https://" + CONFIG.POSTGRES.HOST, CONFIG.SUPABASE.KEY)
-    }
+	constructor() {
+		this.supabase = createClient(
+			"https://" + CONFIG.POSTGRES.HOST,
+			CONFIG.SUPABASE.KEY,
+		);
+	}
 
-    async sendMail(): Promise<string> {
-        return "test"
-    }
+	async sendMail(): Promise<string> {
+		return "test";
+	}
 }

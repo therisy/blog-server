@@ -10,7 +10,7 @@ declare global {
 			data: T;
 		}
 	}
-	
+
 	namespace Auth {
 		interface User {
 			uid?: string;

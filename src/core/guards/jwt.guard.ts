@@ -9,7 +9,7 @@ export class JwtGuard implements CanActivate {
 	constructor(
 		private readonly jwtService: JwtService,
 		@InjectRepository(User) private userRepository: Repository<User>,
-		) {}
+	) {}
 
 	async canActivate(context: ExecutionContext): Promise<boolean> {
 		const request = context.switchToHttp().getRequest();
@@ -18,13 +18,15 @@ export class JwtGuard implements CanActivate {
 
 		const decoded = this.jwtService.verify(token);
 		if (decoded && decoded.uid) {
-			const user = await this.userRepository.findOne({ uid: decoded.uid });
+			const user = await this.userRepository.findOne({
+				uid: decoded.uid,
+			});
 
 			request.user = {
 				uid: user.uid,
 				username: user.username,
 				email: user.email,
-				role: user.role
+				role: user.role,
 			} as Auth.User;
 			return true;
 		}

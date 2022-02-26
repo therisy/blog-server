@@ -1,5 +1,3 @@
-
-  
 import { IsEmail, IsOptional, IsString, Length } from "class-validator";
 import { ApiProperty } from "@nestjs/swagger";
 
@@ -10,7 +8,7 @@ export class PatchUserDTO {
 	@IsOptional()
 	username: string;
 
-    @ApiProperty()
+	@ApiProperty()
 	@IsEmail()
 	@IsOptional()
 	email: string;

@@ -3,6 +3,7 @@ import { User } from "@decorators/user.decorator";
 import { RoleTypes } from "@enums/role.enum";
 import { JwtGuard } from "@guards/jwt.guard";
 import { RolesGuard } from "@guards/role.guard";
+import { LikeService } from "@modules/like/like.service";
 import {
 	Controller,
 	Post,
@@ -11,14 +12,26 @@ import {
 	Patch,
 	Param,
 	Delete,
+	Get,
 } from "@nestjs/common";
 import { CreatePostDTO } from "./dto/create-post.dto";
 import { PatchPostDTO } from "./dto/patch-post.dto";
+import { PostSchema } from "./entities/post.entity";
 import { PostService } from "./post.service";
 
 @Controller("post")
 export class PostController {
-	constructor(private readonly postService: PostService) {}
+	constructor(
+		private readonly postService: PostService,
+		private readonly likeService: LikeService,
+	) {}
+
+	@Get("/all")
+	@UseGuards(JwtGuard, RolesGuard)
+	@Roles(RoleTypes.USER)
+	getAll(): Promise<Blog.ReturnType<any>> {
+		return this.postService.getAll();
+	}
 
 	@Post("/create")
 	@UseGuards(JwtGuard, RolesGuard)
@@ -28,6 +41,15 @@ export class PostController {
 		@Body() post: CreatePostDTO,
 	): Promise<Blog.ReturnType<boolean>> {
 		return this.postService.create(user, post);
+	}
+
+	@Get(":id")
+	@UseGuards(JwtGuard, RolesGuard)
+	@Roles(RoleTypes.USER)
+	findOnePostById(
+		@Param("id") id: string,
+	): Promise<Blog.ReturnType<Post.PostDetails>> {
+		return this.postService.findOnePostById(id);
 	}
 
 	@Patch(":id")
@@ -49,5 +71,25 @@ export class PostController {
 		@Param("id") id: string,
 	): Promise<Blog.ReturnType<boolean>> {
 		return this.postService.deletePost(user, id);
+	}
+
+	@Post("/like/add/:id")
+	@UseGuards(JwtGuard, RolesGuard)
+	@Roles(RoleTypes.USER)
+	like(
+		@User() user,
+		@Param("id") id: string,
+	): Promise<Blog.ReturnType<boolean>> {
+		return this.likeService.like(user, id);
+	}
+
+	@Post("/like/remove/:id")
+	@UseGuards(JwtGuard, RolesGuard)
+	@Roles(RoleTypes.USER)
+	dislike(
+		@User() user,
+		@Param("id") id: string,
+	): Promise<Blog.ReturnType<boolean>> {
+		return this.likeService.dislike(user, id);
 	}
 }

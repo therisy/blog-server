@@ -27,6 +27,11 @@ export class UserService {
 		private readonly snowflake: Snowflake,
 	) {}
 
+	async getUserName(id: string): Promise<string> {
+		let data = await this.userRepository.findOne({ uid: id });
+		return data.username;
+	}
+
 	async createNewUser(
 		field: CreateUserDTO,
 	): Promise<Blog.ReturnType<string>> {

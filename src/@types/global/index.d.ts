@@ -24,5 +24,15 @@ declare global {
 		}
 	}
 
-	namespace Post {}
+	namespace Post {
+		interface PostDetails {
+			title: string;
+			description: string;
+			short_description: string;
+			uid: string;
+			username: string;
+			like: number;
+			pid: string;
+		}
+	}
 }

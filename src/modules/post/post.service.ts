@@ -1,5 +1,8 @@
 import { Snowflake } from "@libs/snowflake";
+import { Like } from "@modules/like/entities/like.entities";
+import { LikeService } from "@modules/like/like.service";
 import { User } from "@modules/user/entities/user.entity";
+import { UserService } from "@modules/user/user.service";
 import {
 	ConflictException,
 	HttpStatus,
@@ -11,16 +14,37 @@ import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
 import { CreatePostDTO } from "./dto/create-post.dto";
 import { PatchPostDTO } from "./dto/patch-post.dto";
-import { Post } from "./entities/post.entity";
+import { PostSchema } from "./entities/post.entity";
 
 @Injectable()
 export class PostService {
 	constructor(
 		@InjectRepository(User) private userRepository: Repository<User>,
-		@InjectRepository(Post) private postRepository: Repository<Post>,
-		private readonly jwtService: JwtService,
+		@InjectRepository(PostSchema)
+		private postRepository: Repository<PostSchema>,
+		@InjectRepository(Like) private likeRepository: Repository<Like>,
 		private readonly snowflake: Snowflake,
 	) {}
+
+	async getAll(): Promise<Blog.ReturnType<any>> {
+		const data = await this.postRepository.find();
+
+		return {
+			statusCode: HttpStatus.OK,
+			message: "successful",
+			data: data.map((v) => {
+				return {
+					title: v.title,
+					description: v.description,
+					short_description: v.short_description,
+					uid: v.uid,
+					username: "test",
+					like: v.like,
+					pid: v.pid,
+				};
+			}),
+		};
+	}
 
 	async create(
 		user: Auth.User,
@@ -47,6 +71,30 @@ export class PostService {
 			statusCode: HttpStatus.CREATED,
 			message: "successful",
 			data: true,
+		};
+	}
+
+	async findOnePostById(
+		id: string,
+	): Promise<Blog.ReturnType<Post.PostDetails>> {
+		const data = await this.postRepository.findOne({
+			pid: id,
+		});
+		console.log(data);
+		if (!data) throw new NotFoundException();
+
+		return {
+			statusCode: HttpStatus.OK,
+			message: "successful",
+			data: {
+				title: data.title,
+				description: data.description,
+				short_description: data.short_description,
+				uid: data.uid,
+				username: "test",
+				like: data.like,
+				pid: data.pid,
+			},
 		};
 	}
 
@@ -100,6 +148,7 @@ export class PostService {
 		if (!data) throw new NotFoundException();
 
 		await this.postRepository.delete({ uid: user.uid, pid: id });
+		await this.likeRepository.delete({ uid: user.uid, pid: id });
 
 		return {
 			statusCode: HttpStatus.OK,

@@ -2,15 +2,19 @@ import { Module } from "@nestjs/common";
 import { PostService } from "./post.service";
 import { PostController } from "./post.controller";
 import { Snowflake } from "@libs/snowflake";
-import { JwtModule } from "@nestjs/jwt";
+import { JwtModule, JwtService } from "@nestjs/jwt";
 import { ConfigModule, ConfigService } from "@nestjs/config";
 import { TypeOrmModule } from "@nestjs/typeorm";
 import { User } from "@modules/user/entities/user.entity";
-import { Post } from "./entities/post.entity";
+import { PostSchema } from "./entities/post.entity";
+import { UserService } from "@modules/user/user.service";
+import { SupaBaseService } from "@modules/supabase/supabase.service";
+import { LikeService } from "@modules/like/like.service";
+import { Like } from "@modules/like/entities/like.entities";
 
 @Module({
 	imports: [
-		TypeOrmModule.forFeature([User, Post]),
+		TypeOrmModule.forFeature([User, PostSchema, Like]),
 		JwtModule.registerAsync({
 			imports: [ConfigModule],
 			useFactory: async (configService: ConfigService) => ({
@@ -20,6 +24,12 @@ import { Post } from "./entities/post.entity";
 		}),
 	],
 	controllers: [PostController],
-	providers: [PostService, Snowflake],
+	providers: [
+		PostService,
+		Snowflake,
+		UserService,
+		SupaBaseService,
+		LikeService,
+	],
 })
 export class PostModule {}

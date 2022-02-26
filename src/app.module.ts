@@ -8,7 +8,8 @@ import { UserModule } from "@modules/user/user.module";
 import { User } from "@modules/user/entities/user.entity";
 import { factory } from "./config";
 import { PostModule } from "@modules/post/post.module";
-import { Post } from "@modules/post/entities/post.entity";
+import { PostSchema } from "@modules/post/entities/post.entity";
+import { Like } from "@modules/like/entities/like.entities";
 
 @Module({
 	imports: [
@@ -26,7 +27,7 @@ import { Post } from "@modules/post/entities/post.entity";
 				username: configService.get<string>("POSTGRES.USERNAME"),
 				password: configService.get<string>("POSTGRES.PASSWORD"),
 				database: configService.get<string>("POSTGRES.DATABASE"),
-				entities: [User, Post],
+				entities: [User, PostSchema, Like],
 				synchronize: true,
 			}),
 			inject: [ConfigService],

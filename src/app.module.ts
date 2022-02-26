@@ -7,6 +7,10 @@ import { AppService } from "./app.service";
 import { UserModule } from "@modules/user/user.module";
 import { User } from "@modules/user/entities/user.entity";
 import { factory } from "./config";
+import { PostModule } from "@modules/post/post.module";
+import { PostSchema } from "@modules/post/entities/post.entity";
+import { Like } from "@modules/like/entities/like.entities";
+import { Comment } from "@modules/comment/entities/comment.entity";
 
 @Module({
 	imports: [
@@ -24,7 +28,7 @@ import { factory } from "./config";
 				username: configService.get<string>("POSTGRES.USERNAME"),
 				password: configService.get<string>("POSTGRES.PASSWORD"),
 				database: configService.get<string>("POSTGRES.DATABASE"),
-				entities: [User],
+				entities: [User, PostSchema, Like, Comment],
 				synchronize: true,
 			}),
 			inject: [ConfigService],
@@ -33,6 +37,7 @@ import { factory } from "./config";
 			load: [factory],
 		}),
 		UserModule,
+		PostModule,
 	],
 	controllers: [AppController],
 	providers: [AppService],

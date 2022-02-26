@@ -6,6 +6,12 @@ export class User {
 	@PrimaryGeneratedColumn()
 	id: number;
 
+	@Column({ nullable: true })
+	uid: string;
+
+	@Column({ nullable: true, default: 0 })
+	role: number;
+
 	@Column()
 	@Length(4, 16)
 	username: string;

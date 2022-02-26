@@ -5,14 +5,18 @@ export {};
 declare global {
 	namespace Blog {
 		interface User {
-			id: string;
+			uid?: string;
 			username: string;
 			email: string;
-			password: string;
+			role: number;
 		}
 
 		interface Jwt {
-			access_token: strng;
+			access_token: string;
+		}
+
+		interface JwtUser extends User {
+			access_token: string;
 		}
 
 		interface ReturnType<T> {

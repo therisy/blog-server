@@ -25,7 +25,7 @@ export class JwtGuard implements CanActivate {
 				username: user.username,
 				email: user.email,
 				role: user.role
-			} as Blog.User;
+			} as Auth.User;
 			return true;
 		}
 		return false;

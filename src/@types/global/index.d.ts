@@ -3,7 +3,7 @@ import { HttpStatus } from "@nestjs/common";
 export {};
 
 declare global {
-	namespace Blog {
+	namespace Auth {
 		interface User {
 			uid?: string;
 			username: string;
@@ -21,4 +21,6 @@ declare global {
 			data: T;
 		}
 	}
+
+	namespace Post {}
 }

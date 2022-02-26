@@ -23,7 +23,7 @@ export class UserService {
 
 	async createNewUser(
 		field: CreateUserDTO,
-	): Promise<Blog.ReturnType<string>> {
+	): Promise<Auth.ReturnType<string>> {
 		const email = await this.userRepository.findOne({ email: field.email });
 		if (email)
 			throw new ConflictException(
@@ -50,7 +50,7 @@ export class UserService {
 		};
 	}
 
-	async login(field: CreateUserDTO): Promise<Blog.ReturnType<string>>  {
+	async login(field: CreateUserDTO): Promise<Auth.ReturnType<string>>  {
 		const user = await this.userRepository.findOne({ username: field.username, email: field.email });
 		if(!user) throw new NotFoundException('User not found');
 
@@ -66,7 +66,7 @@ export class UserService {
 		};
 	}
 
-	async getUserInfo(user: Blog.User): Promise<Blog.ReturnType<Blog.JwtUser>> {
+	async getUserInfo(user: Auth.User): Promise<Auth.ReturnType<Auth.JwtUser>> {
 		const getUser = await this.userRepository.findOne({ uid: user.uid });
 		if(!getUser) throw new NotFoundException('User not found');
 
@@ -85,9 +85,9 @@ export class UserService {
 	}
 
 	async updatePassword(
-		user: Blog.User,
+		user: Auth.User,
 		password: PatchPasswordDTO,
-	): Promise<Blog.ReturnType<string>> {
+	): Promise<Auth.ReturnType<string>> {
 		const getUser = await this.userRepository.findOne({ uid: user.uid });
 		if (!getUser) throw new NotFoundException("User not found");
 
@@ -121,9 +121,9 @@ export class UserService {
 	}
 
 	async updateMy(
-		user: Blog.User,
+		user: Auth.User,
 		newUser: PatchUserDTO,
-	): Promise<Blog.ReturnType<string>> {
+	): Promise<Auth.ReturnType<string>> {
 		const getUser = await this.userRepository.findOne({ uid: user.uid });
 		if (!getUser) throw new NotFoundException("User not found");
 
@@ -147,7 +147,7 @@ export class UserService {
 		};
 	}
 
-	async deleteAccount(user: Blog.User): Promise<Blog.ReturnType<boolean>> {
+	async deleteAccount(user: Auth.User): Promise<Auth.ReturnType<boolean>> {
 		const getUser = await this.userRepository.findOne({ uid: user.uid });
 		if (!getUser) throw new NotFoundException("User not found");
 	

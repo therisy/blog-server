@@ -11,36 +11,36 @@ export class UserController {
 	constructor(private readonly userService: UserService) {}
 
 	@Post('/create')
-	create(@Body() field: CreateUserDTO): Promise<Blog.ReturnType<string>> {
+	create(@Body() field: CreateUserDTO): Promise<Auth.ReturnType<string>> {
 		return this.userService.createNewUser(field);
 	}
 
 	@Post('/login')
-	login(@Body() field: CreateUserDTO): Promise<Blog.ReturnType<string>> {
+	login(@Body() field: CreateUserDTO): Promise<Auth.ReturnType<string>> {
 		return this.userService.login(field);
 	}
 
 	@Get('/@me')
 	@UseGuards(JwtGuard)
-	getUser(@User() user: Blog.User): Promise<Blog.ReturnType<Blog.JwtUser>> {
+	getUser(@User() user: Auth.User): Promise<Auth.ReturnType<Auth.JwtUser>> {
 		return this.userService.getUserInfo(user);
 	}
 
 	@Patch('/@me')
 	@UseGuards(JwtGuard)
-	updateMy(@User() user: Blog.User, @Body() field: PatchUserDTO): Promise<Blog.ReturnType<string>> {
+	updateMy(@User() user: Auth.User, @Body() field: PatchUserDTO): Promise<Auth.ReturnType<string>> {
 		return this.userService.updateMy(user, field);
 	}
 
 	@Patch('/password')
 	@UseGuards(JwtGuard)
-	updatePassword(@User() user: Blog.User, @Body() password: PatchPasswordDTO): Promise<Blog.ReturnType<string>> {
+	updatePassword(@User() user: Auth.User, @Body() password: PatchPasswordDTO): Promise<Auth.ReturnType<string>> {
 		return this.userService.updatePassword(user, password);
 	}
 
 	@Delete('/@me')
 	@UseGuards(JwtGuard)
-	deleteAccount(@User() user: Blog.User): Promise<Blog.ReturnType<boolean>> {
+	deleteAccount(@User() user: Auth.User): Promise<Auth.ReturnType<boolean>> {
 		return this.userService.deleteAccount(user);
 	}
 }

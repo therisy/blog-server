@@ -34,5 +34,12 @@ declare global {
 			like: number;
 			pid: string;
 		}
+
+		interface Comment {
+			cid: string;
+			message: string;
+			uid: string;
+			username: string;
+		}
 	}
 }

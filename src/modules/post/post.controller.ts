@@ -3,6 +3,8 @@ import { User } from "@decorators/user.decorator";
 import { RoleTypes } from "@enums/role.enum";
 import { JwtGuard } from "@guards/jwt.guard";
 import { RolesGuard } from "@guards/role.guard";
+import { CommentService } from "@modules/comment/comment.service";
+import { CreateCommentDTO } from "@modules/comment/dto/create-comment.dto";
 import { LikeService } from "@modules/like/like.service";
 import {
 	Controller,
@@ -24,6 +26,7 @@ export class PostController {
 	constructor(
 		private readonly postService: PostService,
 		private readonly likeService: LikeService,
+		private readonly commentService: CommentService,
 	) {}
 
 	@Get("/all")
@@ -91,5 +94,47 @@ export class PostController {
 		@Param("id") id: string,
 	): Promise<Blog.ReturnType<boolean>> {
 		return this.likeService.dislike(user, id);
+	}
+
+	@Post("/comment/:id")
+	@UseGuards(JwtGuard, RolesGuard)
+	@Roles(RoleTypes.USER)
+	addComment(
+		@User() user,
+		@Param("id") id: string,
+		@Body() field: CreateCommentDTO,
+	): Promise<Blog.ReturnType<boolean>> {
+		return this.commentService.addComment(user, id, field);
+	}
+
+	@Get("/comment/:id")
+	@UseGuards(JwtGuard, RolesGuard)
+	@Roles(RoleTypes.USER)
+	getComments(
+		@Param("id") pid: string,
+	): Promise<Blog.ReturnType<Post.Comment[]>> {
+		return this.commentService.allComents(pid);
+	}
+
+	@Patch("/comment/:id")
+	@UseGuards(JwtGuard, RolesGuard)
+	@Roles(RoleTypes.USER)
+	updateComment(
+		@User() user,
+		@Param("id") id: string,
+		@Body() field: CreateCommentDTO,
+	): Promise<Blog.ReturnType<boolean>> {
+		return this.commentService.updateComment(user, id, field);
+	}
+
+	@Delete("/comment/:post/:msg")
+	@UseGuards(JwtGuard, RolesGuard)
+	@Roles(RoleTypes.USER)
+	deleteComment(
+		@User() user,
+		@Param("post") post: string,
+		@Param("msg") msg: string,
+	): Promise<Blog.ReturnType<boolean>> {
+		return this.commentService.deleteComment(user, post, msg);
 	}
 }

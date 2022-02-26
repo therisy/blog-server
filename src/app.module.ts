@@ -10,6 +10,7 @@ import { factory } from "./config";
 import { PostModule } from "@modules/post/post.module";
 import { PostSchema } from "@modules/post/entities/post.entity";
 import { Like } from "@modules/like/entities/like.entities";
+import { Comment } from "@modules/comment/entities/comment.entity";
 
 @Module({
 	imports: [
@@ -27,7 +28,7 @@ import { Like } from "@modules/like/entities/like.entities";
 				username: configService.get<string>("POSTGRES.USERNAME"),
 				password: configService.get<string>("POSTGRES.PASSWORD"),
 				database: configService.get<string>("POSTGRES.DATABASE"),
-				entities: [User, PostSchema, Like],
+				entities: [User, PostSchema, Like, Comment],
 				synchronize: true,
 			}),
 			inject: [ConfigService],

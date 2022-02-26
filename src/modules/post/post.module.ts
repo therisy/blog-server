@@ -11,10 +11,12 @@ import { UserService } from "@modules/user/user.service";
 import { SupaBaseService } from "@modules/supabase/supabase.service";
 import { LikeService } from "@modules/like/like.service";
 import { Like } from "@modules/like/entities/like.entities";
+import { CommentService } from "@modules/comment/comment.service";
+import { Comment } from "@modules/comment/entities/comment.entity";
 
 @Module({
 	imports: [
-		TypeOrmModule.forFeature([User, PostSchema, Like]),
+		TypeOrmModule.forFeature([User, PostSchema, Like, Comment]),
 		JwtModule.registerAsync({
 			imports: [ConfigModule],
 			useFactory: async (configService: ConfigService) => ({
@@ -30,6 +32,7 @@ import { Like } from "@modules/like/entities/like.entities";
 		UserService,
 		SupaBaseService,
 		LikeService,
+		CommentService,
 	],
 })
 export class PostModule {}

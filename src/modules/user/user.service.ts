@@ -23,7 +23,7 @@ export class UserService {
 
 	async createNewUser(
 		field: CreateUserDTO,
-	): Promise<Auth.ReturnType<string>> {
+	): Promise<Blog.ReturnType<string>> {
 		const email = await this.userRepository.findOne({ email: field.email });
 		if (email)
 			throw new ConflictException(
@@ -50,7 +50,7 @@ export class UserService {
 		};
 	}
 
-	async login(field: CreateUserDTO): Promise<Auth.ReturnType<string>>  {
+	async login(field: CreateUserDTO): Promise<Blog.ReturnType<string>>  {
 		const user = await this.userRepository.findOne({ username: field.username, email: field.email });
 		if(!user) throw new NotFoundException('User not found');
 
@@ -66,7 +66,7 @@ export class UserService {
 		};
 	}
 
-	async getUserInfo(user: Auth.User): Promise<Auth.ReturnType<Auth.JwtUser>> {
+	async getUserInfo(user: Auth.User): Promise<Blog.ReturnType<Auth.JwtUser>> {
 		const getUser = await this.userRepository.findOne({ uid: user.uid });
 		if(!getUser) throw new NotFoundException('User not found');
 
@@ -87,7 +87,7 @@ export class UserService {
 	async updatePassword(
 		user: Auth.User,
 		password: PatchPasswordDTO,
-	): Promise<Auth.ReturnType<string>> {
+	): Promise<Blog.ReturnType<string>> {
 		const getUser = await this.userRepository.findOne({ uid: user.uid });
 		if (!getUser) throw new NotFoundException("User not found");
 
@@ -123,7 +123,7 @@ export class UserService {
 	async updateMy(
 		user: Auth.User,
 		newUser: PatchUserDTO,
-	): Promise<Auth.ReturnType<string>> {
+	): Promise<Blog.ReturnType<string>> {
 		const getUser = await this.userRepository.findOne({ uid: user.uid });
 		if (!getUser) throw new NotFoundException("User not found");
 
@@ -147,7 +147,7 @@ export class UserService {
 		};
 	}
 
-	async deleteAccount(user: Auth.User): Promise<Auth.ReturnType<boolean>> {
+	async deleteAccount(user: Auth.User): Promise<Blog.ReturnType<boolean>> {
 		const getUser = await this.userRepository.findOne({ uid: user.uid });
 		if (!getUser) throw new NotFoundException("User not found");
 	

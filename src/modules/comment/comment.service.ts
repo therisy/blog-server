@@ -1,6 +1,6 @@
 import { Snowflake } from "@libs/snowflake";
 import { PostSchema } from "@modules/post/entities/post.entity";
-import { User } from "@modules/user/entities/user.entity";
+import { User } from "@modules/user/etc/user.entity";
 import { HttpStatus, Injectable, NotFoundException } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
@@ -18,7 +18,7 @@ export class CommentService {
 		private readonly snowflake: Snowflake,
 	) {}
 
-	async allComents(pid: string): Promise<Blog.ReturnType<Post.Comment[]>> {
+	async allComents(pid: string) {
 		const post = await this.postRepository.findOne({ pid: pid });
 		if (!post) throw new NotFoundException();
 
@@ -40,10 +40,10 @@ export class CommentService {
 	}
 
 	async addComment(
-		user: Auth.User,
+		user,
 		id: string,
 		field: CreateCommentDTO,
-	): Promise<Blog.ReturnType<boolean>> {
+	): Promise<boolean> {
 		const post = await this.postRepository.findOne({ pid: id });
 		if (!post) throw new NotFoundException();
 
@@ -56,18 +56,14 @@ export class CommentService {
 			message: field.message,
 		});
 
-		return {
-			statusCode: HttpStatus.CREATED,
-			message: "successful",
-			data: true,
-		};
+		return true;
 	}
 
 	async updateComment(
-		user: Auth.User,
+		user,
 		id: string,
 		field: CreateCommentDTO,
-	): Promise<Blog.ReturnType<boolean>> {
+	): Promise<boolean> {
 		const post = await this.commentRepository.findOne({ cid: id });
 		if (!post) throw new NotFoundException();
 
@@ -78,18 +74,14 @@ export class CommentService {
 
 		await this.commentRepository.update({ cid: id }, { message });
 
-		return {
-			statusCode: HttpStatus.OK,
-			message: "successful",
-			data: true,
-		};
+		return true;
 	}
 
 	async deleteComment(
-		user: Auth.User,
+		user,
 		pid: string,
 		msg: string,
-	): Promise<Blog.ReturnType<boolean>> {
+	): Promise<boolean> {
 		const post = await this.commentRepository.findOne({ pid: pid });
 		if (!post) throw new NotFoundException();
 
@@ -98,10 +90,6 @@ export class CommentService {
 
 		await this.commentRepository.delete({ pid: pid, cid: msg });
 
-		return {
-			statusCode: HttpStatus.OK,
-			message: "successful",
-			data: true,
-		};
+		return true;
 	}
 }

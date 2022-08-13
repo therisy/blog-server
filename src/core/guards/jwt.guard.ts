@@ -1,4 +1,4 @@
-import { User } from "@modules/user/entities/user.entity";
+import { User } from "@modules/user/etc/user.entity";
 import { Injectable, CanActivate, ExecutionContext } from "@nestjs/common";
 import { JwtService } from "@nestjs/jwt";
 import { InjectRepository } from "@nestjs/typeorm";
@@ -27,7 +27,8 @@ export class JwtGuard implements CanActivate {
 				username: user.username,
 				email: user.email,
 				role: user.role,
-			} as Auth.User;
+			} as User;
+
 			return true;
 		}
 		return false;

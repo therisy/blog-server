@@ -1,5 +1,5 @@
 import { PostSchema } from "@modules/post/entities/post.entity";
-import { User } from "@modules/user/entities/user.entity";
+import { User } from "@modules/user/etc/user.entity";
 import { HttpStatus, Injectable, NotFoundException } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
@@ -14,7 +14,7 @@ export class LikeService {
 		@InjectRepository(Like) private likeRepository: Repository<Like>,
 	) {}
 
-	async like(user: Auth.User, id: string): Promise<Blog.ReturnType<boolean>> {
+	async like(user, id: string): Promise<boolean> {
 		const post = await this.postRepository.findOne({ pid: id });
 		if (!post) throw new NotFoundException();
 
@@ -23,11 +23,7 @@ export class LikeService {
 			pid: id,
 		});
 		if (data)
-			return {
-				statusCode: HttpStatus.CONFLICT,
-				message: "unsuccessful",
-				data: false,
-			};
+			return true;
 
 		await this.likeRepository.save({
 			pid: id,
@@ -35,17 +31,13 @@ export class LikeService {
 		});
 		await this.postRepository.update({ pid: id }, { like: ++post.like });
 
-		return {
-			statusCode: HttpStatus.OK,
-			message: "successful",
-			data: true,
-		};
+		return true;
 	}
 
 	async dislike(
-		user: Auth.User,
+		user,
 		id: string,
-	): Promise<Blog.ReturnType<boolean>> {
+	): Promise<boolean> {
 		const post = await this.postRepository.findOne({ pid: id });
 		if (!post) throw new NotFoundException();
 
@@ -58,10 +50,6 @@ export class LikeService {
 		await this.likeRepository.delete({ pid: id, uid: user.uid });
 		await this.postRepository.update({ pid: id }, { like: --post.like });
 
-		return {
-			statusCode: HttpStatus.OK,
-			message: "successful",
-			data: true,
-		};
+		return true;
 	}
 }

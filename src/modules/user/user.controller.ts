@@ -9,52 +9,53 @@ import {
 } from "@nestjs/common";
 import { JwtGuard } from "@guards/jwt.guard";
 import { UserService } from "./user.service";
-import { CreateUserDTO } from "./dto/create-user.dto";
+import { CreateUserDto } from "./etc/create-user.dto";
 import { User } from "@decorators/user.decorator";
-import { PatchPasswordDTO } from "./dto/update-password.dto";
-import { PatchUserDTO } from "./dto/patch-user.dto";
+import { PatchPasswordDto } from "./etc/update-password.dto";
+import { UpdateUserDto } from "./etc/update-user.dto";
 
 @Controller("user")
 export class UserController {
-	constructor(private readonly userService: UserService) {}
+	constructor(private readonly service: UserService) {}
 
 	@Post("/create")
-	create(@Body() field: CreateUserDTO): Promise<Blog.ReturnType<string>> {
-		return this.userService.createNewUser(field);
+	create(@Body() field: CreateUserDto) {
+		return this.service.create(field);
 	}
 
+	// TODO: move to session module
 	@Post("/login")
-	login(@Body() field: CreateUserDTO): Promise<Blog.ReturnType<string>> {
-		return this.userService.login(field);
+	login(@Body() field: CreateUserDto) {
+		return this.service.login(field);
 	}
 
 	@Get("/@me")
 	@UseGuards(JwtGuard)
-	getUser(@User() user: Auth.User): Promise<Blog.ReturnType<Auth.JwtUser>> {
-		return this.userService.getUserInfo(user);
+	getMe(@User() user) {
+		return this.service.getMe(user);
 	}
 
 	@Patch("/@me")
 	@UseGuards(JwtGuard)
-	updateMy(
-		@User() user: Auth.User,
-		@Body() field: PatchUserDTO,
-	): Promise<Blog.ReturnType<string>> {
-		return this.userService.updateMy(user, field);
+	updateMe(
+		@User() user,
+		@Body() dto: UpdateUserDto,
+	): Promise<string> {
+		return this.service.updateMe(user, dto);
 	}
 
 	@Patch("/password")
 	@UseGuards(JwtGuard)
 	updatePassword(
-		@User() user: Auth.User,
-		@Body() password: PatchPasswordDTO,
-	): Promise<Blog.ReturnType<string>> {
-		return this.userService.updatePassword(user, password);
+		@User() user,
+		@Body() password: PatchPasswordDto,
+	): Promise<string> {
+		return this.service.updatePassword(user, password);
 	}
 
 	@Delete("/@me")
 	@UseGuards(JwtGuard)
-	deleteAccount(@User() user: Auth.User): Promise<Blog.ReturnType<boolean>> {
-		return this.userService.deleteAccount(user);
+	delete(@User() user): Promise<boolean> {
+		return this.service.delete(user);
 	}
 }

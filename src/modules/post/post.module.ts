@@ -5,10 +5,9 @@ import { Snowflake } from "@libs/snowflake";
 import { JwtModule, JwtService } from "@nestjs/jwt";
 import { ConfigModule, ConfigService } from "@nestjs/config";
 import { TypeOrmModule } from "@nestjs/typeorm";
-import { User } from "@modules/user/entities/user.entity";
+import { User } from "@modules/user/etc/user.entity";
 import { PostSchema } from "./entities/post.entity";
 import { UserService } from "@modules/user/user.service";
-import { SupaBaseService } from "@modules/supabase/supabase.service";
 import { LikeService } from "@modules/like/like.service";
 import { Like } from "@modules/like/entities/like.entities";
 import { CommentService } from "@modules/comment/comment.service";
@@ -30,7 +29,6 @@ import { Comment } from "@modules/comment/entities/comment.entity";
 		PostService,
 		Snowflake,
 		UserService,
-		SupaBaseService,
 		LikeService,
 		CommentService,
 	],

@@ -10,12 +10,10 @@ async function bootstrap() {
 
 	const config = new DocumentBuilder()
 		.setTitle("Blog Server")
-		.setDescription("no description.")
 		.setVersion("1.0")
-		.addTag("blog")
 		.build();
 	const document = SwaggerModule.createDocument(app, config);
-	SwaggerModule.setup("api", app, document);
+	SwaggerModule.setup("docs", app, document);
 
 	await app.listen(8080);
 }

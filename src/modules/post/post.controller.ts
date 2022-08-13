@@ -32,7 +32,7 @@ export class PostController {
 	@Get("/all")
 	@UseGuards(JwtGuard, RolesGuard)
 	@Roles(RoleTypes.USER)
-	getAll(): Promise<Blog.ReturnType<any>> {
+	getAll() {
 		return this.postService.getAll();
 	}
 
@@ -42,7 +42,7 @@ export class PostController {
 	create(
 		@User() user,
 		@Body() post: CreatePostDTO,
-	): Promise<Blog.ReturnType<boolean>> {
+	): Promise<boolean> {
 		return this.postService.create(user, post);
 	}
 
@@ -51,7 +51,7 @@ export class PostController {
 	@Roles(RoleTypes.USER)
 	findOnePostById(
 		@Param("id") id: string,
-	): Promise<Blog.ReturnType<Post.PostDetails>> {
+	) {
 		return this.postService.findOnePostById(id);
 	}
 
@@ -62,7 +62,7 @@ export class PostController {
 		@User() user,
 		@Param("id") id: string,
 		@Body() post: PatchPostDTO,
-	): Promise<Blog.ReturnType<boolean>> {
+	): Promise<boolean> {
 		return this.postService.updatePost(user, id, post);
 	}
 
@@ -72,7 +72,7 @@ export class PostController {
 	delete(
 		@User() user,
 		@Param("id") id: string,
-	): Promise<Blog.ReturnType<boolean>> {
+	): Promise<boolean> {
 		return this.postService.deletePost(user, id);
 	}
 
@@ -82,7 +82,7 @@ export class PostController {
 	like(
 		@User() user,
 		@Param("id") id: string,
-	): Promise<Blog.ReturnType<boolean>> {
+	): Promise<boolean> {
 		return this.likeService.like(user, id);
 	}
 
@@ -92,7 +92,7 @@ export class PostController {
 	dislike(
 		@User() user,
 		@Param("id") id: string,
-	): Promise<Blog.ReturnType<boolean>> {
+	): Promise<boolean> {
 		return this.likeService.dislike(user, id);
 	}
 
@@ -103,7 +103,7 @@ export class PostController {
 		@User() user,
 		@Param("id") id: string,
 		@Body() field: CreateCommentDTO,
-	): Promise<Blog.ReturnType<boolean>> {
+	): Promise<boolean> {
 		return this.commentService.addComment(user, id, field);
 	}
 
@@ -112,7 +112,7 @@ export class PostController {
 	@Roles(RoleTypes.USER)
 	getComments(
 		@Param("id") pid: string,
-	): Promise<Blog.ReturnType<Post.Comment[]>> {
+	) {
 		return this.commentService.allComents(pid);
 	}
 
@@ -123,7 +123,7 @@ export class PostController {
 		@User() user,
 		@Param("id") id: string,
 		@Body() field: CreateCommentDTO,
-	): Promise<Blog.ReturnType<boolean>> {
+	) {
 		return this.commentService.updateComment(user, id, field);
 	}
 
@@ -134,7 +134,7 @@ export class PostController {
 		@User() user,
 		@Param("post") post: string,
 		@Param("msg") msg: string,
-	): Promise<Blog.ReturnType<boolean>> {
+	) {
 		return this.commentService.deleteComment(user, post, msg);
 	}
 }

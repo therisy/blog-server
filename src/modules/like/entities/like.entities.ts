@@ -1,5 +1,4 @@
 import { Entity, Column, PrimaryGeneratedColumn } from "typeorm";
-import { Length, IsEmail } from "class-validator";
 
 @Entity()
 export class Like {

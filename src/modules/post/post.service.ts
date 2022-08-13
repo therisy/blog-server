@@ -1,7 +1,7 @@
 import { Snowflake } from "@libs/snowflake";
 import { Like } from "@modules/like/entities/like.entities";
 import { LikeService } from "@modules/like/like.service";
-import { User } from "@modules/user/entities/user.entity";
+import { User } from "@modules/user/etc/user.entity";
 import { UserService } from "@modules/user/user.service";
 import {
 	ConflictException,
@@ -26,7 +26,7 @@ export class PostService {
 		private readonly snowflake: Snowflake,
 	) {}
 
-	async getAll(): Promise<Blog.ReturnType<any>> {
+	async getAll() {
 		const data = await this.postRepository.find();
 
 		return {
@@ -47,9 +47,9 @@ export class PostService {
 	}
 
 	async create(
-		user: Auth.User,
+		user,
 		post: CreatePostDTO,
-	): Promise<Blog.ReturnType<boolean>> {
+	) {
 		const data = await this.postRepository.findOne({
 			uid: user.uid,
 			title: post.title,
@@ -67,16 +67,12 @@ export class PostService {
 			like: 0,
 		});
 
-		return {
-			statusCode: HttpStatus.CREATED,
-			message: "successful",
-			data: true,
-		};
+		return true;
 	}
 
 	async findOnePostById(
 		id: string,
-	): Promise<Blog.ReturnType<Post.PostDetails>> {
+	) {
 		const data = await this.postRepository.findOne({
 			pid: id,
 		});
@@ -99,10 +95,10 @@ export class PostService {
 	}
 
 	async updatePost(
-		user: Auth.User,
+		user,
 		id: string,
 		field: PatchPostDTO,
-	): Promise<Blog.ReturnType<boolean>> {
+	): Promise<boolean> {
 		const data = await this.postRepository.findOne({
 			uid: user.uid,
 			pid: id,
@@ -130,17 +126,13 @@ export class PostService {
 			{ title, description, short_description },
 		);
 
-		return {
-			statusCode: HttpStatus.OK,
-			message: "successful",
-			data: true,
-		};
+		return true;
 	}
 
 	async deletePost(
-		user: Auth.User,
+		user,
 		id: string,
-	): Promise<Blog.ReturnType<boolean>> {
+	): Promise<boolean> {
 		const data = await this.postRepository.findOne({
 			uid: user.uid,
 			pid: id,
@@ -150,10 +142,6 @@ export class PostService {
 		await this.postRepository.delete({ uid: user.uid, pid: id });
 		await this.likeRepository.delete({ uid: user.uid, pid: id });
 
-		return {
-			statusCode: HttpStatus.OK,
-			message: "successful",
-			data: true,
-		};
+		return true;
 	}
 }

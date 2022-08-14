@@ -10,6 +10,7 @@ import { PostModule } from "@modules/post/post.module";
 import { PostSchema } from "@modules/post/etc/post.entity";
 import { Like } from "@modules/like/etc/like.entities";
 import { Comment } from "@modules/comment/etc/comment.entity";
+import { LikeModule } from "@modules/like/like.module";
 
 @Module({
 	imports: [
@@ -37,6 +38,7 @@ import { Comment } from "@modules/comment/etc/comment.entity";
 		}),
 		UserModule,
 		PostModule,
+		LikeModule,
 	],
 	controllers: [AppController],
 })

@@ -13,6 +13,7 @@ export class LikeService {
 		@InjectRepository(Like) private likeRepository: Repository<Like>,
 	) {}
 
+
 	async like(id: string, user): Promise<boolean> {
 		const post = await this.postRepository.findOne({ id, });
 		if (!post) throw new NotFoundException();

@@ -1,10 +1,10 @@
 import { PostSchema } from "@modules/post/etc/post.entity";
-import { User } from "@modules/user/etc/user.entity";
-import {  BadRequestException, Injectable, NotFoundException, UnauthorizedException } from "@nestjs/common";
+import {  Injectable, NotFoundException, UnauthorizedException } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
-import { CreateCommentDTO } from "./etc/create-comment.dto";
+import { CreateCommentDto } from "./etc/create-comment.dto";
 import { Comment } from "./etc/comment.entity";
+import { UpdateCommentDto } from "./etc/update-comment.dto";
 
 @Injectable()
 export class CommentService {
@@ -24,10 +24,10 @@ export class CommentService {
 		return comments;
 	}
 
-	async addComment(
-		user,
+	async create(
 		id: string,
-		field: CreateCommentDTO,
+		field: CreateCommentDto,
+		user,
 	): Promise<boolean> {
 		const post = await this.postRepository.findOne({ id });
 		if (!post) throw new NotFoundException('Post not found');
@@ -41,37 +41,32 @@ export class CommentService {
 		return true;
 	}
 
-	async updateComment(
-		user,
+	async update(
 		id: string,
-		field: CreateCommentDTO,
+		dto: UpdateCommentDto,
+		user,
 	): Promise<boolean> {
 		const post = await this.commentRepository.findOne({ id });
 		if (!post) throw new NotFoundException();
 
 		let message =
-			!!field.message && field.message != post.message
-				? field.message
+			!!dto.message && dto.message != post.message
+				? dto.message
 				: post.message;
 
-		await this.commentRepository.update({ id, post: field.post, user: user.id }, { message });
+		await this.commentRepository.update({ id, post: dto.post, user: user.id }, { message });
 
 		return true;
 	}
 
-	async deleteComment(
+	async delete(
 		id: string,
-		post: string,
 		user
 	): Promise<boolean> {
-		const postModel = await this.commentRepository.findOne({ id: post });
-		if (!postModel) throw new NotFoundException();
-
 		const model = await this.commentRepository.findOne({ id });
 		if (!model) throw new NotFoundException();
 
 		if (model.user != user.id) throw new UnauthorizedException();
-		if (post != model.post) throw new BadRequestException();
 
 		await this.commentRepository.delete({
 			id

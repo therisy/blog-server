@@ -1,7 +1,5 @@
 import {
 	IsEmail,
-	IsOptional,
-	IsPhoneNumber,
 	IsString,
 	Length,
 } from "class-validator";

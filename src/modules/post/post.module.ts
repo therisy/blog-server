@@ -1,17 +1,16 @@
 import { Module } from "@nestjs/common";
 import { PostService } from "./post.service";
 import { PostController } from "./post.controller";
-import { Snowflake } from "@libs/snowflake";
-import { JwtModule, JwtService } from "@nestjs/jwt";
+import { JwtModule } from "@nestjs/jwt";
 import { ConfigModule, ConfigService } from "@nestjs/config";
 import { TypeOrmModule } from "@nestjs/typeorm";
 import { User } from "@modules/user/etc/user.entity";
-import { PostSchema } from "./entities/post.entity";
+import { PostSchema } from "./etc/post.entity";
 import { UserService } from "@modules/user/user.service";
 import { LikeService } from "@modules/like/like.service";
-import { Like } from "@modules/like/entities/like.entities";
+import { Like } from "@modules/like/etc/like.entities";
 import { CommentService } from "@modules/comment/comment.service";
-import { Comment } from "@modules/comment/entities/comment.entity";
+import { Comment } from "@modules/comment/etc/comment.entity";
 
 @Module({
 	imports: [
@@ -27,7 +26,6 @@ import { Comment } from "@modules/comment/entities/comment.entity";
 	controllers: [PostController],
 	providers: [
 		PostService,
-		Snowflake,
 		UserService,
 		LikeService,
 		CommentService,

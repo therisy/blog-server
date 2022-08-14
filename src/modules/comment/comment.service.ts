@@ -1,42 +1,27 @@
-import { Snowflake } from "@libs/snowflake";
-import { PostSchema } from "@modules/post/entities/post.entity";
+import { PostSchema } from "@modules/post/etc/post.entity";
 import { User } from "@modules/user/etc/user.entity";
-import { HttpStatus, Injectable, NotFoundException } from "@nestjs/common";
+import {  BadRequestException, Injectable, NotFoundException, UnauthorizedException } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
-import { CreateCommentDTO } from "./dto/create-comment.dto";
-import { Comment } from "./entities/comment.entity";
+import { CreateCommentDTO } from "./etc/create-comment.dto";
+import { Comment } from "./etc/comment.entity";
 
 @Injectable()
 export class CommentService {
 	constructor(
-		@InjectRepository(User) private userRepository: Repository<User>,
 		@InjectRepository(Comment)
 		private commentRepository: Repository<Comment>,
 		@InjectRepository(PostSchema)
 		private postRepository: Repository<PostSchema>,
-		private readonly snowflake: Snowflake,
-	) {}
+	) { }
 
-	async allComents(pid: string) {
-		const post = await this.postRepository.findOne({ pid: pid });
-		if (!post) throw new NotFoundException();
+	async getCommentsByPost(post: string) {
+		const model = await this.postRepository.findOne({ id: post });
+		if (!model) throw new NotFoundException();
 
-		const allComments = await this.commentRepository.find({ pid: pid });
-		if (!allComments.length) throw new NotFoundException();
+		const comments = await this.commentRepository.find({ post });
 
-		return {
-			statusCode: HttpStatus.OK,
-			message: "successful",
-			data: allComments.map((v) => {
-				return {
-					cid: v.cid,
-					message: v.message,
-					uid: v.uid,
-					username: "test",
-				};
-			}),
-		};
+		return comments;
 	}
 
 	async addComment(
@@ -44,15 +29,12 @@ export class CommentService {
 		id: string,
 		field: CreateCommentDTO,
 	): Promise<boolean> {
-		const post = await this.postRepository.findOne({ pid: id });
-		if (!post) throw new NotFoundException();
-
-		const commentID = await this.snowflake.generate();
+		const post = await this.postRepository.findOne({ id });
+		if (!post) throw new NotFoundException('Post not found');
 
 		await this.commentRepository.save({
-			uid: user.uid,
-			pid: id,
-			cid: commentID,
+			post: id,
+			user: user.id,
 			message: field.message,
 		});
 
@@ -64,7 +46,7 @@ export class CommentService {
 		id: string,
 		field: CreateCommentDTO,
 	): Promise<boolean> {
-		const post = await this.commentRepository.findOne({ cid: id });
+		const post = await this.commentRepository.findOne({ id });
 		if (!post) throw new NotFoundException();
 
 		let message =
@@ -72,23 +54,28 @@ export class CommentService {
 				? field.message
 				: post.message;
 
-		await this.commentRepository.update({ cid: id }, { message });
+		await this.commentRepository.update({ id, post: field.post, user: user.id }, { message });
 
 		return true;
 	}
 
 	async deleteComment(
-		user,
-		pid: string,
-		msg: string,
+		id: string,
+		post: string,
+		user
 	): Promise<boolean> {
-		const post = await this.commentRepository.findOne({ pid: pid });
-		if (!post) throw new NotFoundException();
+		const postModel = await this.commentRepository.findOne({ id: post });
+		if (!postModel) throw new NotFoundException();
 
-		const message = await this.commentRepository.findOne({ cid: msg });
-		if (!message) throw new NotFoundException();
+		const model = await this.commentRepository.findOne({ id });
+		if (!model) throw new NotFoundException();
 
-		await this.commentRepository.delete({ pid: pid, cid: msg });
+		if (model.user != user.id) throw new UnauthorizedException();
+		if (post != model.post) throw new BadRequestException();
+
+		await this.commentRepository.delete({
+			id
+		})
 
 		return true;
 	}

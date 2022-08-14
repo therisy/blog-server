@@ -22,7 +22,6 @@
       "@enums/*": ["src/core/enums/*"],
       "@guards/*": ["src/core/guards/*"],
       "@decorators/*": ["src/core/decorators/*"],
-      "@libs/*": ["libs/*"]
 		},
   }
 }

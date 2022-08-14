@@ -1,15 +1,15 @@
 import { Module } from "@nestjs/common";
 import { TypeOrmModule } from "@nestjs/typeorm";
 import { ConfigModule, ConfigService } from "@nestjs/config";
-import { RateLimiterModule, RateLimiterGuard } from "nestjs-rate-limiter";
+import { RateLimiterModule } from "nestjs-rate-limiter";
 import { AppController } from "./app.controller";
 import { UserModule } from "@modules/user/user.module";
 import { User } from "@modules/user/etc/user.entity";
 import { factory } from "./config";
 import { PostModule } from "@modules/post/post.module";
-import { PostSchema } from "@modules/post/entities/post.entity";
-import { Like } from "@modules/like/entities/like.entities";
-import { Comment } from "@modules/comment/entities/comment.entity";
+import { PostSchema } from "@modules/post/etc/post.entity";
+import { Like } from "@modules/like/etc/like.entities";
+import { Comment } from "@modules/comment/etc/comment.entity";
 
 @Module({
 	imports: [

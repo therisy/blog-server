@@ -4,16 +4,13 @@ import { Length } from "class-validator";
 @Entity()
 export class Comment {
 	@PrimaryGeneratedColumn()
-	id: number;
-
-	@Column({ nullable: true })
-	pid: string;
-
-	@Column({ nullable: true })
-	cid: string;
+	id: string;
 
 	@Column()
-	uid: string;
+	post: string;
+
+	@Column()
+	user: string;
 
 	@Column()
 	@Length(3)

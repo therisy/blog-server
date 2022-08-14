@@ -17,13 +17,13 @@ export class JwtGuard implements CanActivate {
 		if (!token) return false;
 
 		const decoded = this.jwtService.verify(token);
-		if (decoded && decoded.uid) {
+		if (decoded && decoded.id) {
 			const user = await this.userRepository.findOne({
-				uid: decoded.uid,
+				id: decoded.id,
 			});
 
 			request.user = {
-				uid: user.uid,
+				id: user.id,
 				username: user.username,
 				email: user.email,
 				role: user.role,

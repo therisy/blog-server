@@ -1,15 +1,13 @@
 import { Entity, Column, PrimaryGeneratedColumn } from "typeorm";
 import { Length, IsEmail } from "class-validator";
+import { RoleTypes } from "@enums/role.enum";
 
 @Entity()
 export class User {
 	@PrimaryGeneratedColumn()
-	id: number;
+	id: any;
 
-	@Column({ nullable: true })
-	uid: string;
-
-	@Column({ nullable: true, default: 0 })
+	@Column({ nullable: true, default: RoleTypes.USER })
 	role: number;
 
 	@Column()

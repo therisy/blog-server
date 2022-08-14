@@ -1,4 +1,3 @@
-import { Snowflake } from "@libs/snowflake";
 import { Module } from "@nestjs/common";
 import { ConfigModule, ConfigService } from "@nestjs/config";
 import { JwtModule } from "@nestjs/jwt";
@@ -19,6 +18,6 @@ import { UserService } from "./user.service";
 		}),
 	],
 	controllers: [UserController],
-	providers: [UserService, Snowflake],
+	providers: [UserService],
 })
 export class UserModule {}

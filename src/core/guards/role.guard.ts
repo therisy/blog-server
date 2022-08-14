@@ -1,21 +1,23 @@
+import { RoleTypes } from "@enums/role.enum";
 import { Injectable, CanActivate, ExecutionContext } from "@nestjs/common";
 import { Reflector } from "@nestjs/core";
 
 @Injectable()
-export class RolesGuard implements CanActivate {
+export class RoleGuard implements CanActivate {
 	constructor(private reflector: Reflector) {}
 
 	canActivate(context: ExecutionContext): boolean {
-		const roles = this.reflector.get<string[]>(
-			"roles",
+		let role = this.reflector.get<number>(
+			"role",
 			context.getHandler(),
 		);
-		if (!roles) {
-			return true;
-		}
+		if (!role) role = RoleTypes.ADMIN;
+
 		const request = context.switchToHttp().getRequest();
 		const user = request.user;
 
-		return roles.some((a) => a <= user.role);
+		if (!user) return false;
+
+		return role <= user.role;
 	}
 }

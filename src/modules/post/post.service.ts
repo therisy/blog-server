@@ -1,49 +1,28 @@
-import { Snowflake } from "@libs/snowflake";
-import { Like } from "@modules/like/entities/like.entities";
-import { LikeService } from "@modules/like/like.service";
-import { User } from "@modules/user/etc/user.entity";
-import { UserService } from "@modules/user/user.service";
+import { Like } from "@modules/like/etc/like.entities";
 import {
 	ConflictException,
 	HttpStatus,
 	Injectable,
 	NotFoundException,
 } from "@nestjs/common";
-import { JwtService } from "@nestjs/jwt";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
-import { CreatePostDTO } from "./dto/create-post.dto";
-import { PatchPostDTO } from "./dto/patch-post.dto";
-import { PostSchema } from "./entities/post.entity";
+import { CreatePostDTO } from "./etc/create-post.dto";
+import { PatchPostDTO } from "./etc/update-post.dto";
+import { PostSchema } from "./etc/post.entity";
 
 @Injectable()
 export class PostService {
 	constructor(
-		@InjectRepository(User) private userRepository: Repository<User>,
 		@InjectRepository(PostSchema)
 		private postRepository: Repository<PostSchema>,
 		@InjectRepository(Like) private likeRepository: Repository<Like>,
-		private readonly snowflake: Snowflake,
 	) {}
 
 	async getAll() {
 		const data = await this.postRepository.find();
 
-		return {
-			statusCode: HttpStatus.OK,
-			message: "successful",
-			data: data.map((v) => {
-				return {
-					title: v.title,
-					description: v.description,
-					short_description: v.short_description,
-					uid: v.uid,
-					username: "test",
-					like: v.like,
-					pid: v.pid,
-				};
-			}),
-		};
+		return data
 	}
 
 	async create(
@@ -51,57 +30,40 @@ export class PostService {
 		post: CreatePostDTO,
 	) {
 		const data = await this.postRepository.findOne({
-			uid: user.uid,
+			user: user.id,
 			title: post.title,
 		});
 		if (data) throw new ConflictException("this post already exists");
 
-		const id = await this.snowflake.generate();
-
 		await this.postRepository.save({
-			pid: id,
-			uid: user.uid,
+			user: user.id,
 			title: post.title,
 			description: post.description,
 			short_description: post.short_description,
-			like: 0,
 		});
 
 		return true;
 	}
 
-	async findOnePostById(
+	async getById(
 		id: string,
 	) {
 		const data = await this.postRepository.findOne({
-			pid: id,
+			id,
 		});
-		console.log(data);
 		if (!data) throw new NotFoundException();
 
-		return {
-			statusCode: HttpStatus.OK,
-			message: "successful",
-			data: {
-				title: data.title,
-				description: data.description,
-				short_description: data.short_description,
-				uid: data.uid,
-				username: "test",
-				like: data.like,
-				pid: data.pid,
-			},
-		};
+		return data;
 	}
 
-	async updatePost(
+	async update(
 		user,
 		id: string,
 		field: PatchPostDTO,
 	): Promise<boolean> {
 		const data = await this.postRepository.findOne({
-			uid: user.uid,
-			pid: id,
+			id,
+			user: user.id
 		});
 		if (!data) throw new NotFoundException();
 
@@ -122,25 +84,25 @@ export class PostService {
 				: data.short_description;
 
 		await this.postRepository.update(
-			{ uid: user.uid, pid: id },
+			{ id, user: user.id },
 			{ title, description, short_description },
 		);
 
 		return true;
 	}
 
-	async deletePost(
+	async delete(
 		user,
 		id: string,
 	): Promise<boolean> {
 		const data = await this.postRepository.findOne({
-			uid: user.uid,
-			pid: id,
+			user: user.id,
+			id,
 		});
 		if (!data) throw new NotFoundException();
 
-		await this.postRepository.delete({ uid: user.uid, pid: id });
-		await this.likeRepository.delete({ uid: user.uid, pid: id });
+		await this.postRepository.delete({ id, user: user.id });
+		await this.likeRepository.delete({ id, user: user.id });
 
 		return true;
 	}

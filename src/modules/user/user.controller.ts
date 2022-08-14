@@ -6,6 +6,7 @@ import {
 	Post,
 	UseGuards,
 	Delete,
+	Put,
 } from "@nestjs/common";
 import { JwtGuard } from "@guards/jwt.guard";
 import { UserService } from "./user.service";
@@ -13,20 +14,16 @@ import { CreateUserDto } from "./etc/create-user.dto";
 import { User } from "@decorators/user.decorator";
 import { PatchPasswordDto } from "./etc/update-password.dto";
 import { UpdateUserDto } from "./etc/update-user.dto";
+import { ApiTags } from "@nestjs/swagger";
 
 @Controller("user")
+@ApiTags('User')
 export class UserController {
 	constructor(private readonly service: UserService) {}
 
 	@Post("/create")
 	create(@Body() field: CreateUserDto) {
 		return this.service.create(field);
-	}
-
-	// TODO: move to session module
-	@Post("/login")
-	login(@Body() field: CreateUserDto) {
-		return this.service.login(field);
 	}
 
 	@Get("/@me")
@@ -40,16 +37,16 @@ export class UserController {
 	updateMe(
 		@User() user,
 		@Body() dto: UpdateUserDto,
-	): Promise<string> {
+	): Promise<boolean> {
 		return this.service.updateMe(user, dto);
 	}
 
-	@Patch("/password")
+	@Put("/password")
 	@UseGuards(JwtGuard)
 	updatePassword(
 		@User() user,
 		@Body() password: PatchPasswordDto,
-	): Promise<string> {
+	): Promise<boolean> {
 		return this.service.updatePassword(user, password);
 	}
 

@@ -3,11 +3,13 @@ import { Entity, Column, PrimaryGeneratedColumn } from "typeorm";
 @Entity()
 export class Like {
 	@PrimaryGeneratedColumn()
-	id: number;
+	id: any;
 
-	@Column({ nullable: true })
-	pid: string;
+	@Column({
+		type: String
+	})
+	post: string;
 
 	@Column()
-	uid: string;
+	user: string;
 }

@@ -3,8 +3,9 @@ import * as dotenv from "dotenv";
 dotenv.config();
 
 export const factory = () => ({
-	API_VERSION: (process.env.API_VERSION as string) || "v1",
+	VERSION: process.env.VERSION || "1.0.0",
 	JWT_SECRET: process.env.JWT_SECRET as string,
+	ORIGINS: process.env.ORIGINS ? process.env.ORIGINS.split(",") : "",
 	POSTGRES: {
 		USERNAME: process.env.POSTGRES_USERNAME as string,
 		PASSWORD: process.env.POSTGRES_PASSWORD as string,

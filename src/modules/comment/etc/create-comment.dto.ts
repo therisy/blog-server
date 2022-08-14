@@ -6,4 +6,8 @@ export class CreateCommentDTO {
 	@Length(3)
 	@IsString()
 	message: string;
+
+	@ApiProperty()
+	@IsString()
+	post: string;
 }

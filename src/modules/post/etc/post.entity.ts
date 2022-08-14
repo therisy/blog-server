@@ -4,13 +4,10 @@ import { Length, IsEmail } from "class-validator";
 @Entity()
 export class PostSchema {
 	@PrimaryGeneratedColumn()
-	id: number;
-
-	@Column({ nullable: true })
-	pid: string;
+	id: any;
 
 	@Column()
-	uid: string;
+	user: string;
 
 	@Column()
 	@Length(4)
@@ -23,7 +20,4 @@ export class PostSchema {
 	@Column()
 	@Length(20)
 	description: string;
-
-	@Column()
-	like: number;
 }
